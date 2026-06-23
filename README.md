@@ -1,7 +1,7 @@
 # WT Framework — Flutter Edition
 
 <p align="center">
-  <img src="https://wondtech.com/imgs/logo.svg" width="200" alt="WondTech Logo"/>
+  <img src="https://wondtech.com/pub_wt/imgs/logo.svg" width="200" alt="WondTech Logo"/>
 </p>
 
 <p align="center">
