@@ -1,7 +1,7 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.0
-// * @copyright : 2024 WondTech for Integrated Digital Solutions
+// * @version : 1.1
+// * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
 
