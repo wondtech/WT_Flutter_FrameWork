@@ -109,18 +109,28 @@ example/
 
 ## Installation
 
-Add to your `pubspec.yaml`:
+Install the latest version from [pub.dev](https://pub.dev/packages/wt_framework):
+```bash
+flutter pub add wt_framework
+```
+
+This adds it to your `pubspec.yaml` and runs `flutter pub get` automatically:
+```yaml
+dependencies:
+  wt_framework: ^1.1.0
+```
+
+<details>
+<summary>Alternative: install from Git</summary>
+
 ```yaml
 dependencies:
   wt_framework:
     git:
-      url: https://github.com/mogbil/WT_Flutter_FrameWork.git
+      url: https://github.com/wondtech/WT_Flutter_FrameWork.git
 ```
-
-Then run:
-```bash
-flutter pub get
-```
+Then run `flutter pub get`.
+</details>
 
 Then import in your Dart files:
 ```dart
