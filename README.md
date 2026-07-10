@@ -5,12 +5,12 @@
 </p>
 
 <p align="center">
-  <b>WT Framework - Flutter Edition v1.0</b><br/>
+  <b>WT Framework - Flutter Edition v1.1</b><br/>
   Inspired by the original <a href="https://github.com/mogbil/WT_FrameWork">WondTech PHP MVC Framework</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0-blue"/>
+  <img src="https://img.shields.io/badge/version-1.1-blue"/>
   <img src="https://img.shields.io/badge/flutter-%3E%3D3.10-blue?logo=flutter"/>
   <img src="https://img.shields.io/badge/dart-%3E%3D3.0-blue?logo=dart"/>
   <img src="https://img.shields.io/badge/license-MIT-green"/>
@@ -36,6 +36,44 @@ It enforces a clean **Model → Controller → View** separation, built-in secur
 - **WtSession** — Persistent session management using SharedPreferences
 - **WtHelper** — Common utilities: date formatting, string manipulation, flash messages, dialogs
 - **WtConfig** — Centralized app configuration (base URL, secret key, theme)
+
+---
+
+## What's new in v1.1
+
+`WtModel` is now ready for real, authenticated, enveloped backends — not just bare REST:
+
+- **Bearer auth, automatic** — the token saved with `WtSession.set('token', ...)` is injected as `Authorization: Bearer <token>` on every request.
+- **Response envelopes** — set `WtConfig.envelopeKey: 'data'` and models transparently read `{ "state": true, "data": {...} }`.
+- **Real error messages** — a failed response raises `WtModelException` carrying the server's `msg` (key configurable via `WtConfig.messageKey`); optional `successKey` treats `200 + {state:false}` as a failure too.
+- **Low-level client** — `getJson / postJson / putJson / deleteJson / postMultipart` for action-style endpoints (`/api/login`, `/api/ad/5`) and **file uploads** (`WtUpload`).
+- **Safer defaults** — client-side body sanitisation is now **opt-in** (`WtConfig.sanitizeRequests`) so it no longer mangles legitimate content; add per-model headers via the `extraHeaders` getter.
+
+```dart
+WtConfig.init(const WtConfig(
+  appName: 'Findlly',
+  baseUrl: 'https://findlly.co',
+  secretKey: '...',
+  envelopeKey: 'data',   // unwrap { state, data }
+  successKey: 'state',   // 200 + state:false => error
+  tokenKey: 'token',     // WtSession key holding the bearer token
+));
+
+// action endpoint + upload, all token- & envelope-aware:
+class AdsModel extends WtModel<Ad> {
+  @override String get endpoint => '/api/ads';
+  @override Ad fromJson(Map<String, dynamic> j) => Ad.fromJson(j);
+
+  Future<List<Ad>> search(String q) async =>
+      fromJsonList((await getJson('/api/ads', query: {'q': q}))['items']);
+
+  Future<Ad> createWithPhotos(Map<String, String> fields, List<int> jpg) async =>
+      fromJson(await postMultipart('/api/createad',
+        fields: fields,
+        files: [WtUpload(field: 'images[]', bytes: jpg, filename: 'p.jpg', contentType: 'image/jpeg')],
+      ));
+}
+```
 
 ---
 
@@ -292,4 +330,4 @@ WtHelper.slug('My Page Title');      // "my-page-title"
 
 ## License
 
-MIT License © 2026 WT Framework — Flutter Edition v1.0 — Built by [WondTech](https://wondtech.com). All rights reserved.
+MIT License © 2026 WT Framework — Flutter Edition v1.1 — Built by [WondTech](https://wondtech.com). All rights reserved.
