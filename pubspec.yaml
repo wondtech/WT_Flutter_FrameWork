@@ -1,7 +1,9 @@
 name: wt_framework
-description: WondTech Flutter MVC Framework v1.1
+description: WondTech Flutter MVC framework — controllers, models, views, routing, sessions, and enveloped token-auth API helpers for building structured Flutter apps.
 version: 1.1.0
-homepage: http://www.wondtech.com
+homepage: https://www.wondtech.com
+repository: https://github.com/wondtech/WT_Flutter_FrameWork
+issue_tracker: https://github.com/wondtech/WT_Flutter_FrameWork/issues
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
