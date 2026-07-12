@@ -5,12 +5,12 @@
 </p>
 
 <p align="center">
-  <b>WT Framework - Flutter Edition v1.1</b><br/>
+  <b>WT Framework - Flutter Edition v1.2</b><br/>
   Inspired by the original <a href="https://github.com/mogbil/WT_FrameWork">WondTech PHP MVC Framework</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1-blue"/>
+  <img src="https://img.shields.io/badge/version-1.2-blue"/>
   <img src="https://img.shields.io/badge/flutter-%3E%3D3.10-blue?logo=flutter"/>
   <img src="https://img.shields.io/badge/dart-%3E%3D3.0-blue?logo=dart"/>
   <img src="https://img.shields.io/badge/license-MIT-green"/>
@@ -38,6 +38,21 @@ It enforces a clean **Model → Controller → View** separation, built-in secur
 - **WtConfig** — Centralized app configuration (base URL, secret key, theme)
 
 ---
+
+## What's new in v1.2
+
+`WtHelper.timeAgo` is now production-grade and localisable:
+
+- **No negative counts** — a future or clock-skewed date (a just-posted row whose server time runs ahead) clamps to "just now" instead of `-3s ago`.
+- **Full range** — seconds → minutes → hours → days → **weeks, months, years** (previously it fell back to an absolute date after 7 days).
+- **Localisable** — pass `TimeAgoLabels` (`enShort` default, `en`, `ar` with correct singular/dual/plural forms) so pluralisation stays out of the framework.
+- **New options** — `assumeUtc` (for UTC-stored timestamps), `now` (inject for deterministic tests), `justNowSeconds`.
+- **`timeAgoFrom(String?)`** — parses an ISO-8601 / `yyyy-MM-dd HH:mm:ss` string and returns `''` for null/blank/invalid input instead of throwing.
+
+```dart
+WtHelper.timeAgoFrom(ad.createdAt, assumeUtc: true, labels: TimeAgoLabels.ar());
+// → "منذ 5 دقائق"
+```
 
 ## What's new in v1.1
 
@@ -109,15 +124,21 @@ example/
 
 ## Installation
 
-Install the latest version from [pub.dev](https://pub.dev/packages/wt_framework):
+### Depend on it
+
+Run this command:
+
+With Flutter:
+
 ```bash
-flutter pub add wt_framework
+$ flutter pub add wt_framework
 ```
 
-This adds it to your `pubspec.yaml` and runs `flutter pub get` automatically:
+This will add a line like this to your package's `pubspec.yaml` (and run an implicit `flutter pub get`):
+
 ```yaml
 dependencies:
-  wt_framework: ^1.1.0
+  wt_framework: ^1.2.0
 ```
 
 <details>
@@ -340,4 +361,4 @@ WtHelper.slug('My Page Title');      // "my-page-title"
 
 ## License
 
-MIT License © 2026 WT Framework — Flutter Edition v1.1 — Built by [WondTech](https://wondtech.com). All rights reserved.
+MIT License © 2026 WT Framework — Flutter Edition v1.2 — Built by [WondTech](https://wondtech.com). All rights reserved.
