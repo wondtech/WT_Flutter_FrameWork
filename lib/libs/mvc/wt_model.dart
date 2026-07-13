@@ -1,6 +1,6 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.2
+// * @version : 1.3
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
@@ -41,6 +41,7 @@ abstract class WtModel<T> {
   /// Resource endpoint used by the REST helpers (e.g. `/users`).
   String get endpoint;
 
+  /// Deserialises a single JSON object into a `T`.
   T fromJson(Map<String, dynamic> json);
 
   List<T> fromJsonList(List<dynamic> jsonList) =>
@@ -181,9 +182,16 @@ abstract class WtModel<T> {
   }
 }
 
+/// Thrown by [WtModel] when a request fails or the envelope reports an error;
+/// carries the server [message] and HTTP [statusCode].
 class WtModelException implements Exception {
+  /// Human-readable error message (from the envelope `msg` when present).
   final String message;
+
+  /// HTTP status code (or a synthetic code for transport/parse errors).
   final int statusCode;
+
+  /// Creates an exception with [message] and [statusCode].
   WtModelException(this.message, this.statusCode);
   @override
   String toString() => 'WtModelException($statusCode): $message';

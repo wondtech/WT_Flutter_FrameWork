@@ -1,6 +1,6 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.2
+// * @version : 1.3
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
@@ -8,26 +8,41 @@
 import 'package:flutter/material.dart';
 import '../mvc/wt_controller.dart';
 
+/// Builds the [WtController] for a matched route from its [RouteSettings].
 typedef WtRouteBuilder = WtController Function(RouteSettings settings);
 
+/// A single route: a [path] pattern (supports `:param` segments) and the
+/// [builder] that creates its controller.
 class WtRoute {
+  /// Path pattern, e.g. `/ad/:id`. `:name` segments are dynamic.
   final String path;
+
+  /// Creates the controller for this route.
   final WtRouteBuilder builder;
 
+  /// Creates a route binding [path] to [builder].
   const WtRoute({required this.path, required this.builder});
 }
 
+/// Matches route names to [WtRoute]s and generates their pages.
 class WtRouter {
+  /// The registered routes, matched in order.
   final List<WtRoute> routes;
+
+  /// Route shown first when the app starts.
   final String initialRoute;
+
+  /// Optional custom page for unmatched routes (defaults to a built-in 404).
   final Widget Function(BuildContext, RouteSettings)? notFoundPage;
 
+  /// Creates a router over [routes] with an [initialRoute].
   const WtRouter({
     required this.routes,
     this.initialRoute = '/',
     this.notFoundPage,
   });
 
+  /// `onGenerateRoute` handler: resolves [settings] to a page or the 404.
   Route<dynamic>? dispatch(RouteSettings settings) {
     final routeName = settings.name ?? '/';
 
@@ -60,6 +75,7 @@ class WtRouter {
     return true;
   }
 
+  /// Extracts `:param` values from [path] using the route [pattern].
   static Map<String, String> getParams(String pattern, String path) {
     final params = <String, String>{};
     final patternParts = pattern.split('/');

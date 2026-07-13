@@ -1,6 +1,6 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.2
+// * @version : 1.3
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
@@ -8,8 +8,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Stateless UI + formatting helpers: dates/relative time, string casing &
+/// slugs, number/currency formatting, and `flash`/`showLoading`/`confirm`
+/// dialog utilities.
 class WtHelper {
 
+  /// Formats [date] with an `intl` [format] pattern (default `yyyy-MM-dd`).
   static String formatDate(DateTime date, {String format = 'yyyy-MM-dd'}) {
     return DateFormat(format).format(date);
   }

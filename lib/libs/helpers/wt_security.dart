@@ -1,6 +1,6 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.2
+// * @version : 1.3
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
@@ -9,8 +9,14 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
+/// Small security utilities: request [sanitize], HMAC [hashWithKey], a random
+/// [generateToken], email validation, and base64 [encode]/[decode] helpers.
+///
+/// Note: [encode]/[decode] are base64 **obfuscation, not encryption** — never
+/// rely on them to protect secrets at rest (use secure storage instead).
 class WtSecurity {
 
+  /// Strips risky tokens from a request map (opt-in; off by default).
   static Map<String, dynamic> sanitize(Map<String, dynamic> data) {
     return data.map((key, value) {
       return MapEntry(key, _sanitizeValue(value));
