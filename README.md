@@ -5,12 +5,12 @@
 </p>
 
 <p align="center">
-  <b>WT Framework - Flutter Edition v1.2</b><br/>
+  <b>WT Framework - Flutter Edition v1.3</b><br/>
   Inspired by the original <a href="https://github.com/mogbil/WT_FrameWork">WondTech PHP MVC Framework</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2-blue"/>
+  <img src="https://img.shields.io/badge/version-1.3-blue"/>
   <img src="https://img.shields.io/badge/flutter-%3E%3D3.10-blue?logo=flutter"/>
   <img src="https://img.shields.io/badge/dart-%3E%3D3.0-blue?logo=dart"/>
   <img src="https://img.shields.io/badge/license-MIT-green"/>
@@ -32,12 +32,28 @@ It enforces a clean **Model → Controller → View** separation, built-in secur
 - **Centralized Router** — Define all routes in one place, with dynamic segments (e.g. `/users/:id`)
 - **Base Model** — HTTP GET / POST / PUT / DELETE with automatic JSON parsing
 - **Base View** — Synchronous and async views with built-in loading/error/empty states
-- **WtSecurity** — Input sanitization, XSS protection, encryption with secret key, secure token generation
-- **WtSession** — Persistent session management using SharedPreferences
+- **WtSecurity** — Input sanitization, HMAC signing, base64 encode/decode helpers, secure random token generation
+- **WtSession** — Persistent session in SharedPreferences; the bearer token is stored in **secure storage** (Android Keystore / iOS Keychain)
 - **WtHelper** — Common utilities: date formatting, string manipulation, flash messages, dialogs
 - **WtConfig** — Centralized app configuration (base URL, secret key, theme)
 
 ---
+
+## What's new in v1.3
+
+**Secure bearer-token storage.** The value stored under `WtConfig.tokenKey` now
+lives in `flutter_secure_storage` (Android Keystore / iOS Keychain) instead of
+`SharedPreferences`, mirrored in a synchronous in-memory cache so `WtModel`
+header injection stays non-async. Tokens saved by 1.2.x are migrated on first
+read and the plaintext copy is scrubbed — **no app code changes and no forced
+logout**. `logout()` / `destroy()` clear the secure token too.
+
+```dart
+await WtSession.set('token', token); // → Keychain / Keystore, not plaintext
+```
+
+> Note: `WtSecurity.encode`/`decode` are base64 **obfuscation, not encryption** —
+> never store secrets with them; use the secure token path above.
 
 ## What's new in v1.2
 
@@ -138,7 +154,7 @@ This will add a line like this to your package's `pubspec.yaml` (and run an impl
 
 ```yaml
 dependencies:
-  wt_framework: ^1.2.0
+  wt_framework: ^1.3.1
 ```
 
 <details>
@@ -361,4 +377,4 @@ WtHelper.slug('My Page Title');      // "my-page-title"
 
 ## License
 
-MIT License © 2026 WT Framework — Flutter Edition v1.2 — Built by [WondTech](https://wondtech.com). All rights reserved.
+MIT License © 2026 WT Framework — Flutter Edition v1.3 — Built by [WondTech](https://wondtech.com). All rights reserved.

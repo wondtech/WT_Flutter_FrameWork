@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.1
+
+- Upgrade `flutter_secure_storage` to `^10.3.1` (drops the discontinued `js`
+  transitive dependency → restores WASM/platform-support score and up-to-date
+  dependencies on pub.dev). The deprecated `encryptedSharedPreferences` Android
+  option is removed — v10 encrypts with modern ciphers by default and migrates
+  existing data automatically. Bumped `flutter_lints` to `^6.0.0`.
+- README/docs clarified: `WtSecurity.encode/decode` are base64 obfuscation
+  (not encryption); the bearer token uses secure storage.
+
 ## 1.3.0
 
 - **Secure bearer-token storage.** `WtSession` now stores the value written

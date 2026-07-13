@@ -25,9 +25,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class WtSession {
   static SharedPreferences? _prefs;
 
-  static const FlutterSecureStorage _secure = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  // v10+ encrypts with modern ciphers by default (the old
+  // encryptedSharedPreferences flag is deprecated and ignored).
+  static const FlutterSecureStorage _secure = FlutterSecureStorage();
 
   /// Fixed secure-storage key — independent of [WtConfig] so the token can be
   /// preloaded in [init] before the config singleton exists.
