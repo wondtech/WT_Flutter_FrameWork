@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>WT Framework - Flutter Edition v1.3</b><br/>
-  Inspired by the original <a href="https://github.com/mogbil/WT_FrameWork">WondTech PHP MVC Framework</a>
+  Inspired by the original <a href="https://github.com/wondtech/WT_FrameWork">WondTech PHP MVC Framework</a>
 </p>
 
 <p align="center">
@@ -20,7 +20,7 @@
 
 ## Overview
 
-A lightweight MVC framework that brings the simplicity and structure of the [WT Framework — PHP Edition](https://github.com/mogbil/WT_FrameWork) to Flutter mobile development.
+A lightweight MVC framework that brings the simplicity and structure of the [WT Framework — PHP Edition](https://github.com/wondtech/WT_FrameWork) to Flutter mobile development.
 
 It enforces a clean **Model → Controller → View** separation, built-in security helpers, session management, and a centralized router — so your Flutter app feels as organized as a well-structured PHP backend.
 
@@ -83,7 +83,7 @@ WtHelper.timeAgoFrom(ad.createdAt, assumeUtc: true, labels: TimeAgoLabels.ar());
 ```dart
 WtConfig.init(const WtConfig(
   appName: 'Findlly',
-  baseUrl: 'https://findlly.co',
+  baseUrl: 'https://example.com',
   secretKey: '...',
   envelopeKey: 'data',   // unwrap { state, data }
   successKey: 'state',   // 200 + state:false => error
