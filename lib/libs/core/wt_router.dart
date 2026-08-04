@@ -1,11 +1,14 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.3
+// * @version : 1.4
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
 
 import 'package:flutter/material.dart';
+import '../anim/wt_anim_types.dart';
+import '../anim/wt_transitions.dart';
+import '../config/wt_config.dart';
 import '../mvc/wt_controller.dart';
 
 /// Builds the [WtController] for a matched route from its [RouteSettings].
@@ -20,8 +23,14 @@ class WtRoute {
   /// Creates the controller for this route.
   final WtRouteBuilder builder;
 
-  /// Creates a route binding [path] to [builder].
-  const WtRoute({required this.path, required this.builder});
+  /// Page transition for this route. When null, the router uses
+  /// [WtConfig.pageTransition] (which itself defaults to
+  /// [WtTransition.platform]).
+  final WtTransition? transition;
+
+  /// Creates a route binding [path] to [builder], optionally with its own
+  /// [transition].
+  const WtRoute({required this.path, required this.builder, this.transition});
 }
 
 /// Matches route names to [WtRoute]s and generates their pages.
@@ -49,8 +58,12 @@ class WtRouter {
     for (final route in routes) {
       if (_matchRoute(route.path, routeName)) {
         final controller = route.builder(settings);
-        return MaterialPageRoute(
+        final transition = route.transition ??
+            WtConfig.maybeInstance?.pageTransition ??
+            WtTransition.platform;
+        return wtBuildRoute(
           settings: settings,
+          transition: transition,
           builder: (context) => controller.render(context),
         );
       }
@@ -58,8 +71,7 @@ class WtRouter {
 
     return MaterialPageRoute(
       builder: (context) =>
-          notFoundPage?.call(context, settings) ??
-          const _DefaultNotFoundPage(),
+          notFoundPage?.call(context, settings) ?? const _DefaultNotFoundPage(),
     );
   }
 
@@ -99,7 +111,8 @@ class _DefaultNotFoundPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('404', style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold)),
+            const Text('404',
+                style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold)),
             const Text('Page Not Found'),
             const SizedBox(height: 16),
             ElevatedButton(

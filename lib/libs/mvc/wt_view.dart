@@ -1,6 +1,6 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.3
+// * @version : 1.4
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 /// assigned variables and builds a widget tree, with ready-made
 /// [scaffold]/[loading]/[error]/[empty] helpers.
 abstract class WtView {
-
   final Map<String, dynamic> _vars = {};
 
   /// Assigns a template variable [value] under [key] (read back with [get]).

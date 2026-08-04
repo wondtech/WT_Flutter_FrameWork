@@ -5,14 +5,15 @@
 </p>
 
 <p align="center">
-  <b>WT Framework - Flutter Edition v1.3</b><br/>
+  <b>WT Framework - Flutter Edition v1.4</b><br/>
   Inspired by the original <a href="https://github.com/wondtech/WT_FrameWork">WondTech PHP MVC Framework</a>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3-blue"/>
+  <a href="https://pub.dev/packages/wt_framework"><img src="https://img.shields.io/pub/v/wt_framework?logo=dart" alt="pub version"/></a>
+  <a href="https://pub.dev/packages/wt_framework/score"><img src="https://img.shields.io/pub/points/wt_framework" alt="pub points"/></a>
+  <a href="https://pub.dev/packages/wt_framework"><img src="https://img.shields.io/pub/likes/wt_framework" alt="pub likes"/></a>
   <img src="https://img.shields.io/badge/flutter-%3E%3D3.10-blue?logo=flutter"/>
-  <img src="https://img.shields.io/badge/dart-%3E%3D3.0-blue?logo=dart"/>
   <img src="https://img.shields.io/badge/license-MIT-green"/>
 </p>
 
@@ -23,6 +24,19 @@
 A lightweight MVC framework that brings the simplicity and structure of the [WT Framework — PHP Edition](https://github.com/wondtech/WT_FrameWork) to Flutter mobile development.
 
 It enforces a clean **Model → Controller → View** separation, built-in security helpers, session management, and a centralized router — so your Flutter app feels as organized as a well-structured PHP backend.
+
+### Coming from the PHP WT Framework?
+
+| PHP WT Framework | Flutter WT Framework | Purpose |
+|---|---|---|
+| `wt_config.php` | `WtConfig` | Central app configuration |
+| Router / `.htaccess` routes | `WtRouter` / `WtRoute` | Named routes with `:param` segments |
+| `Controller` | `WtController` | Handles a request, returns a view |
+| `Model` (DB/HTTP) | `WtModel<T>` | Typed HTTP client (envelope + bearer auth) |
+| Smarty template | `WtView` / `WtAsyncView` | Renders the screen |
+| `$_SESSION` | `WtSession` | Persistent session (token in secure storage) |
+| Security helpers | `WtSecurity` / `WtValidator` | Sanitising, hashing, field validation |
+| Language files (AR/EN) | `WtI18n` | Bilingual strings + RTL |
 
 ---
 
@@ -35,9 +49,42 @@ It enforces a clean **Model → Controller → View** separation, built-in secur
 - **WtSecurity** — Input sanitization, HMAC signing, base64 encode/decode helpers, secure random token generation
 - **WtSession** — Persistent session in SharedPreferences; the bearer token is stored in **secure storage** (Android Keystore / iOS Keychain)
 - **WtHelper** — Common utilities: date formatting, string manipulation, flash messages, dialogs
-- **WtConfig** — Centralized app configuration (base URL, secret key, theme)
+- **WtConfig** — Centralized app configuration (base URL, secret key, theme, animation & network defaults)
+- **Animations** *(v1.4)* — Entrance widgets, fluent `.wtFadeIn()` extensions, staggered lists, and `WtRouter` page transitions — pure Flutter, reduce-motion aware
+- **WtTheme** *(v1.4)* — Design tokens (spacing/radii) + Material 3 light/dark builders from one seed colour
+- **WtI18n** *(v1.4)* — In-app bilingual strings, `{param}` interpolation, persisted language, and RTL
+- **WtValidator** *(v1.4)* — Ready-made `TextFormField` validators (required/email/minLength/phone/match/compose)
+- **Resilient networking** *(v1.4)* — Per-request timeout and automatic GET retry with backoff
 
 ---
+
+## What's new in v1.4
+
+A batteries-included release — all pure Flutter, **zero new dependencies**:
+**animations**, **WtTheme** (design tokens + M3 light/dark), **WtI18n**
+(bilingual + RTL), **WtValidator** (form validators), and **resilient
+networking** (per-request timeout + GET retry). See [§8 Animations](#8-animations)
+and the sections that follow.
+
+**Built-in animations.** Add entrance motion and page transitions with one
+line, and everything honours the OS "reduce motion" setting automatically.
+
+```dart
+// Any widget animates in — no AnimationController needed:
+Text('Welcome').wtFadeIn();
+Card(...).wtSlideUp(delay: Duration(milliseconds: 200));
+Icon(Icons.star).wtScaleIn();
+
+// Cascade a list:
+WtStagger(children: [tileA, tileB, tileC]);
+
+// Page transitions, per route or globally:
+WtRoute(path: '/ad/:id', builder: (s) => AdController(s),
+        transition: WtTransition.slideRight);
+// or WtConfig(pageTransition: WtTransition.fade, ...) for all routes
+```
+
+See [§8 Animations](#8-animations) below for the full API.
 
 ## What's new in v1.3
 
@@ -66,8 +113,8 @@ await WtSession.set('token', token); // → Keychain / Keystore, not plaintext
 - **`timeAgoFrom(String?)`** — parses an ISO-8601 / `yyyy-MM-dd HH:mm:ss` string and returns `''` for null/blank/invalid input instead of throwing.
 
 ```dart
-WtHelper.timeAgoFrom(ad.createdAt, assumeUtc: true, labels: TimeAgoLabels.ar());
-// → "منذ 5 دقائق"
+WtHelper.timeAgoFrom(ad.createdAt, assumeUtc: true, labels: TimeAgoLabels.en());
+// → "5 minutes ago"
 ```
 
 ## What's new in v1.1
@@ -82,7 +129,7 @@ WtHelper.timeAgoFrom(ad.createdAt, assumeUtc: true, labels: TimeAgoLabels.ar());
 
 ```dart
 WtConfig.init(const WtConfig(
-  appName: 'Findlly',
+  appName: 'Example',
   baseUrl: 'https://example.com',
   secretKey: '...',
   envelopeKey: 'data',   // unwrap { state, data }
@@ -113,28 +160,37 @@ class AdsModel extends WtModel<Ad> {
 ```
 wt_framework/
 ├── lib/
-│   ├── wt.dart          ← Package entry point
+│   ├── wt.dart          ← Package entry point (barrel export)
 │   └── libs/
 │       ├── core/
-│       │   ├── wt_app.dart        ← App root widget
-│       │   └── wt_router.dart     ← Route dispatcher
+│       │   ├── wt_app.dart          ← App root widget
+│       │   └── wt_router.dart       ← Route dispatcher (+ page transitions)
 │       ├── config/
-│       │   └── wt_config.dart     ← Global config
+│       │   └── wt_config.dart       ← Global config
 │       ├── mvc/
-│       │   ├── wt_controller.dart ← Base Controller
-│       │   ├── wt_model.dart      ← Base Model + HTTP
-│       │   └── wt_view.dart       ← Base View
+│       │   ├── wt_controller.dart   ← Base Controller
+│       │   ├── wt_model.dart        ← Base Model + HTTP (timeout/retry)
+│       │   └── wt_view.dart         ← Base View
+│       ├── anim/                    ← Animation layer (v1.4)
+│       │   ├── wt_anim_types.dart   ← WtDir / WtTransition enums
+│       │   ├── wt_animate.dart      ← WtFadeIn/SlideIn/ScaleIn/Stagger + extensions
+│       │   └── wt_transitions.dart  ← Page-transition route builder
+│       ├── theme/
+│       │   └── wt_theme.dart        ← Design tokens + M3 light/dark (v1.4)
+│       ├── i18n/
+│       │   └── wt_i18n.dart         ← Bilingual strings + RTL (v1.4)
 │       └── helpers/
-│           ├── wt_security.dart   ← Security utilities
-│           ├── wt_session.dart    ← Session manager
-│           └── wt_helper.dart     ← General helpers
+│           ├── wt_security.dart     ← Security utilities
+│           ├── wt_session.dart      ← Session manager (secure token)
+│           ├── wt_helper.dart       ← General helpers
+│           └── wt_validator.dart    ← Form-field validators (v1.4)
 │
-example/
-├── main.dart
-└── lib/
-    ├── controllers/
-    ├── models/
-    └── views/
+├── test/                            ← Unit & widget tests
+├── analysis_options.yaml            ← Lint rules
+├── .github/workflows/ci.yaml        ← CI: format + analyze + test
+└── example/
+    └── lib/
+        └── main.dart                ← Full-framework showcase app
 ```
 ---
 
@@ -154,7 +210,7 @@ This will add a line like this to your package's `pubspec.yaml` (and run an impl
 
 ```yaml
 dependencies:
-  wt_framework: ^1.3.1
+  wt_framework: ^1.4.0
 ```
 
 <details>
@@ -375,6 +431,51 @@ WtHelper.slug('My Page Title');      // "my-page-title"
 
 ---
 
+### 8. Animations
+
+Pure-Flutter, no extra dependencies. Every animation automatically collapses to
+its final state when the OS **reduce-motion** setting is on or
+`WtConfig.animationsEnabled` is `false`.
+
+**Entrance widgets** — wrap any child:
+```dart
+WtFadeIn(child: Text('Hello'));
+WtSlideIn(from: WtDir.bottom, child: Card(...));   // top | bottom | left | right
+WtScaleIn(delay: Duration(milliseconds: 200), child: Icon(Icons.star));
+```
+
+**Fluent extensions** — the same thing on any widget, one line:
+```dart
+Text('Hello').wtFadeIn();
+Card(...).wtSlideUp(delay: Duration(milliseconds: 200));
+myWidget.wtScaleIn(curve: Curves.easeOutBack);
+```
+
+**Staggered lists** — children cascade in:
+```dart
+WtStagger(children: [tileA, tileB, tileC]);            // a column
+// or per item inside ListView.builder:
+itemBuilder: (ctx, i) => MyTile(items[i]).wtStagger(index: i),
+```
+
+**Page transitions** — set per route, or globally via `WtConfig`:
+```dart
+WtRoute(path: '/ad/:id', builder: (s) => AdController(s),
+        transition: WtTransition.slideRight);
+
+WtConfig.init(const WtConfig(
+  appName: 'My App', baseUrl: '...', secretKey: '...',
+  pageTransition: WtTransition.fade,          // default for all routes
+  animDuration: Duration(milliseconds: 300),  // shared default
+  animationsEnabled: true,                    // global kill switch
+));
+```
+`WtTransition` values: `platform` (default, unchanged native look), `none`,
+`fade`, `slideRight`, `slideLeft`, `slideUp`, `scale`, `fadeScale`.
+
+---
+
 ## License
 
-MIT License © 2026 WT Framework — Flutter Edition v1.3 — Built by [WondTech](https://wondtech.com). All rights reserved.
+MIT License © 2026 WT Framework — Flutter Edition v1.4 — Built by [WondTech](https://wondtech.com). All rights reserved.
+

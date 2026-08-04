@@ -1,11 +1,13 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.3
+// * @version : 1.4
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
 
 import 'package:flutter/material.dart';
+
+import '../anim/wt_anim_types.dart';
 
 /// Global, immutable application configuration (the Flutter equivalent of
 /// `wt_config.php`). Initialise once in `main()` with [WtConfig.init].
@@ -14,11 +16,14 @@ import 'package:flutter/material.dart';
 /// token pulled from the session, a logical success flag and request-body
 /// sanitisation control — so [WtModel] works against enveloped/authenticated
 /// APIs, not just bare REST endpoints.
+///
+/// v1.4 adds the animation defaults ([animationsEnabled], [pageTransition],
+/// [animDuration], [animCurve]) used by the WT animation layer and [WtRouter].
 class WtConfig {
   /// App display name (MaterialApp title).
   final String appName;
 
-  /// API base URL, no trailing slash (e.g. `https://findlly.co`).
+  /// API base URL, no trailing slash (e.g. `https://example.com`).
   final String baseUrl;
 
   /// Shared secret for [WtSecurity] hashing / session obfuscation.
@@ -54,6 +59,34 @@ class WtConfig {
   /// keyword stripping corrupts legitimate content.
   final bool sanitizeRequests;
 
+  // ── v1.4: animation defaults (all optional, backward compatible) ─────────
+
+  /// Global animation switch. When false, WT entrance animations show their
+  /// final state instantly and [WtRouter] skips page transitions. The OS
+  /// "reduce motion" setting is always honoured regardless of this flag.
+  final bool animationsEnabled;
+
+  /// Default page transition used by [WtRouter] when a [WtRoute] doesn't set
+  /// its own. Defaults to [WtTransition.platform] so upgrading changes nothing.
+  final WtTransition pageTransition;
+
+  /// Default duration for WT entrance animations and page transitions.
+  final Duration animDuration;
+
+  /// Default curve for WT entrance animations and page transitions.
+  final Curve animCurve;
+
+  // ── v1.4: network resilience (used by [WtModel]) ─────────────────────────
+
+  /// Per-request timeout for JSON calls. Null disables the timeout. Multipart
+  /// uploads are exempt (they can legitimately run long).
+  final Duration? requestTimeout;
+
+  /// How many times [WtModel] retries a **GET** that times out, fails to
+  /// connect, or returns 5xx (exponential backoff). 0 = no retry (default).
+  /// Non-idempotent verbs (POST/PUT/DELETE) are never auto-retried.
+  final int maxRetries;
+
   const WtConfig({
     required this.appName,
     required this.baseUrl,
@@ -65,6 +98,12 @@ class WtConfig {
     this.successKey,
     this.tokenKey = 'token',
     this.sanitizeRequests = false,
+    this.animationsEnabled = true,
+    this.pageTransition = WtTransition.platform,
+    this.animDuration = const Duration(milliseconds: 300),
+    this.animCurve = Curves.easeOut,
+    this.requestTimeout = const Duration(seconds: 30),
+    this.maxRetries = 0,
   });
 
   static WtConfig? _instance;
@@ -74,7 +113,13 @@ class WtConfig {
   }
 
   static WtConfig get instance {
-    assert(_instance != null, 'WtConfig not initialized. Call WtConfig.init() first.');
+    assert(_instance != null,
+        'WtConfig not initialized. Call WtConfig.init() first.');
     return _instance!;
   }
+
+  /// The active config, or null if [init] hasn't been called. Non-throwing —
+  /// used by the animation layer so it can fall back to defaults before
+  /// [init] runs.
+  static WtConfig? get maybeInstance => _instance;
 }

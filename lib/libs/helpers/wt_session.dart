@@ -1,6 +1,6 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.3
+// * @version : 1.4
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
@@ -130,7 +130,8 @@ class WtSession {
     try {
       await _secure.delete(key: _kSecureToken);
     } catch (_) {/* ignore */}
-    final keys = _p.getKeys().where((k) => k.startsWith('wt_session_')).toList();
+    final keys =
+        _p.getKeys().where((k) => k.startsWith('wt_session_')).toList();
     for (final key in keys) {
       await _p.remove(key);
     }

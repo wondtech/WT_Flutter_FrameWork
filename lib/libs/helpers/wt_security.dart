@@ -1,6 +1,6 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.3
+// * @version : 1.4
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
@@ -15,7 +15,6 @@ import 'package:crypto/crypto.dart';
 /// Note: [encode]/[decode] are base64 **obfuscation, not encryption** — never
 /// rely on them to protect secrets at rest (use secure storage instead).
 class WtSecurity {
-
   /// Strips risky tokens from a request map (opt-in; off by default).
   static Map<String, dynamic> sanitize(Map<String, dynamic> data) {
     return data.map((key, value) {
@@ -77,9 +76,11 @@ class WtSecurity {
   }
 
   static String generateToken({int length = 32}) {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     final random = Random.secure();
-    return List.generate(length, (_) => chars[random.nextInt(chars.length)]).join();
+    return List.generate(length, (_) => chars[random.nextInt(chars.length)])
+        .join();
   }
 
   static bool isValidEmail(String email) {

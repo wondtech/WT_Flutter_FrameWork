@@ -15,26 +15,35 @@ void main() {
 
   group('WtHelper.timeAgo — range (short English)', () {
     test('sub-threshold reads as just now', () {
-      expect(WtHelper.timeAgo(ago(const Duration(seconds: 3)), now: now), 'just now');
+      expect(WtHelper.timeAgo(ago(const Duration(seconds: 3)), now: now),
+          'just now');
     });
     test('seconds', () {
-      expect(WtHelper.timeAgo(ago(const Duration(seconds: 30)), now: now), '30s ago');
+      expect(WtHelper.timeAgo(ago(const Duration(seconds: 30)), now: now),
+          '30s ago');
     });
     test('minutes / hours / days', () {
-      expect(WtHelper.timeAgo(ago(const Duration(minutes: 5)), now: now), '5m ago');
-      expect(WtHelper.timeAgo(ago(const Duration(hours: 3)), now: now), '3h ago');
-      expect(WtHelper.timeAgo(ago(const Duration(days: 2)), now: now), '2d ago');
+      expect(WtHelper.timeAgo(ago(const Duration(minutes: 5)), now: now),
+          '5m ago');
+      expect(
+          WtHelper.timeAgo(ago(const Duration(hours: 3)), now: now), '3h ago');
+      expect(
+          WtHelper.timeAgo(ago(const Duration(days: 2)), now: now), '2d ago');
     });
     test('weeks / months / years', () {
-      expect(WtHelper.timeAgo(ago(const Duration(days: 10)), now: now), '1w ago');
-      expect(WtHelper.timeAgo(ago(const Duration(days: 60)), now: now), '2mo ago');
-      expect(WtHelper.timeAgo(ago(const Duration(days: 400)), now: now), '1y ago');
+      expect(
+          WtHelper.timeAgo(ago(const Duration(days: 10)), now: now), '1w ago');
+      expect(
+          WtHelper.timeAgo(ago(const Duration(days: 60)), now: now), '2mo ago');
+      expect(
+          WtHelper.timeAgo(ago(const Duration(days: 400)), now: now), '1y ago');
     });
   });
 
   group('WtHelper.timeAgo — the bug this release fixes', () {
     test('a future date never yields a negative count', () {
-      final future = now.add(const Duration(hours: 3)); // clock skew / server ahead
+      final future =
+          now.add(const Duration(hours: 3)); // clock skew / server ahead
       expect(WtHelper.timeAgo(future, now: now), 'just now');
     });
   });

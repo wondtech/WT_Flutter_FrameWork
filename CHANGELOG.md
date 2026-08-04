@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.4.0
+
+- **Animation layer (pure Flutter, zero new dependencies).**
+  - Entrance widgets `WtFadeIn`, `WtSlideIn`, `WtScaleIn` and the low-level
+    `WtAnimate` that composes fade/slide/scale.
+  - Fluent `WtAnimateX` extensions on any widget: `.wtFadeIn()`, `.wtSlideUp()`,
+    `.wtSlideIn(from:)`, `.wtScaleIn()`, `.wtStagger(index:)`.
+  - `WtStagger` for cascading a column of children into view.
+  - Page transitions in `WtRouter`: set `WtRoute(transition: ...)` per route or
+    `WtConfig.pageTransition` globally (`fade`, `slideRight/Left/Up`, `scale`,
+    `fadeScale`). Defaults to `WtTransition.platform` — **no behaviour change on
+    upgrade**.
+  - New `WtConfig` knobs: `animationsEnabled`, `pageTransition`, `animDuration`,
+    `animCurve`.
+  - **Accessibility:** all animations honour the OS "reduce motion" setting and
+    the global `animationsEnabled` flag, collapsing to an instant final state.
+- **`WtTheme`** — design tokens (spacing `xs…xxl`, radii, gap/rounded helpers)
+  and Material 3 `light()`/`dark()` builders from a single seed colour.
+- **`WtI18n`** — in-app localisation: translation tables, `{param}`
+  interpolation, fallback language, persisted selection (`WtSession`), `toggle()`,
+  RTL `dir`, and the `app()` / `applyDirection` wiring helpers.
+- **`WtValidator`** — ready-made `TextFormField` validators: `required`, `email`,
+  `minLength`, `maxLength`, `pattern`, `phone`, `match`, and `compose`.
+- **Resilient networking** — new `WtConfig.requestTimeout` (default 30s, multipart
+  exempt) and `WtConfig.maxRetries` (GET-only retry with exponential backoff on
+  timeout / connection error / 5xx). Non-idempotent verbs are never auto-retried.
+- Tooling: added `analysis_options.yaml`, a GitHub Actions CI workflow
+  (format + analyze + test + publish dry-run), a test suite for the new modules,
+  and a rewritten example app that showcases the full framework.
+
 ## 1.3.1
 
 - Upgrade `flutter_secure_storage` to `^10.3.1` (drops the discontinued `js`

@@ -1,6 +1,6 @@
 // ************************************************************
 // * WT Flutter FrameWork
-// * @version : 1.3
+// * @version : 1.4
 // * @copyright : 2026 WondTech for Integrated Digital Solutions
 // * @link : http://www.wondtech.com
 // ************************************************************
@@ -12,7 +12,6 @@ import 'package:intl/intl.dart';
 /// slugs, number/currency formatting, and `flash`/`showLoading`/`confirm`
 /// dialog utilities.
 class WtHelper {
-
   /// Formats [date] with an `intl` [format] pattern (default `yyyy-MM-dd`).
   static String formatDate(DateTime date, {String format = 'yyyy-MM-dd'}) {
     return DateFormat(format).format(date);
@@ -53,7 +52,9 @@ class WtHelper {
           d.millisecond, d.microsecond);
     }
     var diff = (now ?? DateTime.now()).difference(d);
-    if (diff.isNegative) diff = Duration.zero; // clock skew / future → "just now"
+    if (diff.isNegative) {
+      diff = Duration.zero; // clock skew / future → "just now"
+    }
 
     final s = diff.inSeconds;
     if (s < justNowSeconds) return l.justNow;
@@ -89,7 +90,6 @@ class WtHelper {
         labels: labels);
   }
 
-
   static String truncate(String text, int maxLength, {String suffix = '...'}) {
     if (text.length <= maxLength) return text;
     return '${text.substring(0, maxLength)}$suffix';
@@ -109,7 +109,8 @@ class WtHelper {
         .trim();
   }
 
-  static String currency(double amount, {String symbol = '\$', int decimals = 2}) {
+  static String currency(double amount,
+      {String symbol = '\$', int decimals = 2}) {
     return '$symbol${amount.toStringAsFixed(decimals)}';
   }
 
